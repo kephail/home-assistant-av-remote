@@ -1,26 +1,106 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+// App.tsx
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
+import { IconButton } from "@mui/material";
+import {
+  callService,
+  Connection,
+  subscribeEntities,
+} from "home-assistant-js-websocket";
+import { useCallback, useEffect, useState } from "react";
+import { fetchUser, getAuthAndConnection } from "./api";
+import "./App.css";
+import AppleTVStatus from "./Components/AppleTVStatus";
+import BottomNav from "./Components/BottomNav";
+import PS5Status from "./Components/PS5Status";
+import VolumeSlider from "./Components/VolumeSlider";
 
-function App() {
+const App = () => {
+  const [connection, setConnection] = useState<Connection | null>(null);
+  const [isMediaPlayerOn, setIsMediaPlayerOn] = useState<boolean>(false);
+  const [selectedSource, setSelectedSource] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { auth, connection } = await getAuthAndConnection();
+        setConnection(connection);
+        const user = await fetchUser(connection);
+        console.log("Logged in as", user);
+
+        subscribeEntities(connection, (entities) => {
+          const mediaPlayer = entities["media_player.anthem_av"];
+          if (mediaPlayer) {
+            setSelectedSource(mediaPlayer.attributes.source);
+            setIsMediaPlayerOn(
+              mediaPlayer.state === "on" || mediaPlayer.state === "playing"
+            );
+          }
+        });
+      } catch (err) {
+        console.error("Error getting connection:", err);
+      }
+    })();
+  }, []);
+
+  const powerOnMediaPlayer = useCallback(async () => {
+    if (connection) {
+      callService(connection, "media_player", "turn_on", {
+        entity_id: "media_player.anthem_av",
+      });
+    }
+  }, [connection]);
+
+  const powerOffMediaPlayer = useCallback(async () => {
+    if (connection) {
+      callService(connection, "media_player", "turn_off", {
+        entity_id: "media_player.anthem_av",
+      });
+    }
+  }, [connection]);
+
+  const renderComponentBySource = () => {
+    if (!connection) return null;
+    switch (selectedSource) {
+      case "Apple TV":
+        return <AppleTVStatus connection={connection} />;
+      case "PS5":
+        return <PS5Status />;
+      default:
+        return (
+          <div>
+            <p>No source selected.</p>
+            <button onClick={powerOnMediaPlayer}>Power On</button>
+          </div>
+        );
+    }
+  };
+
+  if (!connection) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="container">
+        {isMediaPlayerOn && (
+          <IconButton
+            className="power-off-button"
+            onClick={powerOffMediaPlayer}
+            color="secondary"
+          >
+            <PowerSettingsNewIcon />
+          </IconButton>
+        )}
+        {renderComponentBySource()}
+      </div>
+      {isMediaPlayerOn && (
+        <div className="bottom-container">
+          <VolumeSlider connection={connection} />
+          <BottomNav connection={connection} />
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default App;
