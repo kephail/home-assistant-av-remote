@@ -1,6 +1,6 @@
 import { callService, subscribeEntities } from "home-assistant-js-websocket";
 import { Connection } from "home-assistant-js-websocket/dist/connection";
-import React, { CSSProperties, useEffect, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 
 interface AppleTVStatusProps {
   connection: Connection;
@@ -22,11 +22,7 @@ const avatarStyle: CSSProperties = {
   verticalAlign: "middle",
 };
 
-const AppCard: React.FC<AppCardProps> = ({
-  title,
-  imageUrl,
-  launchCommand,
-}) => (
+const AppCard = ({ title, imageUrl, launchCommand }: AppCardProps) => (
   <div className="app-card" onClick={launchCommand}>
     <img src={imageUrl} alt={title} />
   </div>
