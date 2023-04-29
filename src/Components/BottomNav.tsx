@@ -1,10 +1,23 @@
-// BottomNav.tsx
 import {
-  callService,
   Connection,
+  callService,
   subscribeEntities,
 } from "home-assistant-js-websocket";
 import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import tw from "twin.macro";
+
+const BottomNavContainer = styled.nav`
+  ${tw`flex justify-around items-center bg-white p-2 border-t border-gray-300`}
+`;
+
+const NavItem = styled.div`
+  ${tw`p-2 cursor-pointer`}
+`;
+
+const ActiveNavItem = styled(NavItem)`
+  ${tw`text-blue-500`}
+`;
 
 interface BottomNavProps {
   connection: Connection;
@@ -47,17 +60,18 @@ const BottomNav: React.FC<BottomNavProps> = ({ connection }) => {
   };
 
   return (
-    <nav className="bottom-nav">
-      {navItems.map((item) => (
-        <div
-          key={item}
-          className={`nav-item${currentSource === item ? " active" : ""}`}
-          onClick={() => handleNavItemClick(item)}
-        >
-          {item}
-        </div>
-      ))}
-    </nav>
+    <BottomNavContainer>
+      {navItems.map((item) => {
+        const NavItemComponent =
+          currentSource === item ? ActiveNavItem : NavItem;
+
+        return (
+          <NavItemComponent key={item} onClick={() => handleNavItemClick(item)}>
+            {item}
+          </NavItemComponent>
+        );
+      })}
+    </BottomNavContainer>
   );
 };
 
