@@ -1,6 +1,9 @@
 import { callService, subscribeEntities } from "home-assistant-js-websocket";
 import { Connection } from "home-assistant-js-websocket/dist/connection";
-import { CSSProperties, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import styled from "styled-components";
+import tw from "twin.macro";
+import AppleTVRemote from "./AppleTVRemote";
 
 interface AppleTVStatusProps {
   connection: Connection;
@@ -12,23 +15,28 @@ interface AppCardProps {
   launchCommand: () => void;
 }
 
-const avatarStyle: CSSProperties = {
-  width: "48px",
-  height: "48px",
-  borderRadius: "50%",
-  marginRight: "8px",
-  overflow: "hidden",
-  display: "inline-block",
-  verticalAlign: "middle",
-};
+const Avatar = styled.div`
+  ${tw`w-12 h-12 rounded-full mr-2 overflow-hidden inline-block align-middle`}
+`;
+
+const AppCardContainer = styled.div`
+  ${tw`bg-black flex flex-col items-center justify-center border border-gray-300 rounded p-4 cursor-pointer transition-all duration-300 ease-in-out`}
+  &:hover {
+    ${tw`shadow-md`}
+  }
+`;
 
 const AppCard = ({ title, imageUrl, launchCommand }: AppCardProps) => (
-  <div className="app-card" onClick={launchCommand}>
-    <img src={imageUrl} alt={title} />
-  </div>
+  <AppCardContainer onClick={launchCommand}>
+    <img
+      src={imageUrl}
+      alt={title}
+      className="w-full h-auto max-h-24 object-contain"
+    />
+  </AppCardContainer>
 );
 
-const LIVING_ROOM_ENTITY_ID = "media_player.living_room";
+export const LIVING_ROOM_ENTITY_ID = "media_player.living_room";
 
 const AppleTVStatus = ({ connection }: AppleTVStatusProps) => {
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
@@ -56,18 +64,6 @@ const AppleTVStatus = ({ connection }: AppleTVStatusProps) => {
     });
   };
 
-  const powerOnMediaPlayer = () => {
-    callService(connection, "media_player", "turn_on", {
-      entity_id: LIVING_ROOM_ENTITY_ID,
-    });
-  };
-
-  const powerOffMediaPlayer = () => {
-    callService(connection, "media_player", "turn_off", {
-      entity_id: LIVING_ROOM_ENTITY_ID,
-    });
-  };
-
   const apps = [
     {
       title: "Netflix",
@@ -82,23 +78,21 @@ const AppleTVStatus = ({ connection }: AppleTVStatusProps) => {
   ];
 
   return (
-    <div className="apple-tv-status">
-      <button onClick={powerOnMediaPlayer}>Turn on</button>
-      <button onClick={powerOffMediaPlayer}>Turn off</button>
-      <h2>Apple TV Status</h2>
-      <div style={{ display: "flex", alignItems: "center" }}>
+    <div className="apple-tv-status flex flex-col items-center">
+      <h2 className="mb-4">Apple TV Status</h2>
+      <div className="flex items-center">
         {currentlyPlayingMedia && (
-          <div style={avatarStyle}>
+          <Avatar>
             <img
               src={process.env.REACT_APP_HASS_URL + currentlyPlayingMedia}
               alt={currentlyPlaying || "Now playing"}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              className="w-full h-full object-cover"
             />
-          </div>
+          </Avatar>
         )}
         <p>{currentlyPlaying}</p>
       </div>
-      <div className="app-grid">
+      <div className="app-grid pt-4 grid grid-cols-2 gap-4">
         {apps.map((app) => (
           <AppCard
             key={app.title}
@@ -107,6 +101,9 @@ const AppleTVStatus = ({ connection }: AppleTVStatusProps) => {
             launchCommand={() => launchApp(app.title)}
           />
         ))}
+      </div>
+      <div className="fixed right-4 bottom-32">
+        <AppleTVRemote connection={connection} />
       </div>
     </div>
   );

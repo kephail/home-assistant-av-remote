@@ -1,4 +1,3 @@
-// PS5Status.tsx
 import { Client as PahoClient } from "paho-mqtt";
 import { useEffect, useState } from "react";
 

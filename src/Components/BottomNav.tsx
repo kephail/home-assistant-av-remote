@@ -6,6 +6,7 @@ import {
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
+import { LIVING_ROOM_ENTITY_ID } from "./AppleTVStatus";
 
 const BottomNavContainer = styled.nav`
   ${tw`flex justify-around items-center bg-white p-2 border-t border-gray-300`}
@@ -57,6 +58,11 @@ const BottomNav = ({ connection }: BottomNavProps) => {
       entity_id: "media_player.anthem_av",
       source: source,
     });
+    if (source === "Apple TV") {
+      callService(connection, "media_player", "turn_on", {
+        entity_id: LIVING_ROOM_ENTITY_ID,
+      });
+    }
   };
 
   return (
