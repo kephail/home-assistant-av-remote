@@ -50,6 +50,14 @@ const App = () => {
     }
   }, [connection]);
 
+  const powerOnTV = async () => {
+    if (connection) {
+      callService(connection, "wake_on_lan", "send_magic_packet", {
+        mac: process.env.REACT_APP_WEBOS_TV_MAC_ADDRESS,
+      });
+    }
+  };
+
   const powerOffMediaPlayer = useCallback(async () => {
     if (connection) {
       callService(connection, "media_player", "turn_off", {
@@ -81,6 +89,7 @@ const App = () => {
 
   return (
     <div className="App">
+      <button onClick={powerOnTV}>powerOnTV</button>
       <div className="container">
         {isMediaPlayerOn && (
           <IconButton
