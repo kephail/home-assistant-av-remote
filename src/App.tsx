@@ -131,7 +131,6 @@ const App = () => {
 
   return (
     <AppContainer>
-      <button onClick={powerOnTV}>powerOnTV</button>
       <ContentContainer>
         <TogglePowerButton
           isOn={isMediaPlayerOn && isTVOn}
