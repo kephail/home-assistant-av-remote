@@ -3,7 +3,7 @@ import {
   callService,
   subscribeEntities,
 } from "home-assistant-js-websocket";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 
@@ -31,7 +31,7 @@ const hdmiMapping: Record<string, string> = {
   "HDMI 4": "Shield",
 };
 
-const BottomNav: React.FC<BottomNavProps> = ({ connection }) => {
+const BottomNav = ({ connection }: BottomNavProps) => {
   const [currentSource, setCurrentSource] = useState<string>("");
 
   useEffect(() => {

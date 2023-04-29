@@ -12,7 +12,7 @@ interface VolumeSliderProps {
   connection: Connection;
 }
 
-const VolumeSlider: React.FC<VolumeSliderProps> = ({ connection }) => {
+const VolumeSlider = ({ connection }: VolumeSliderProps) => {
   const [volume, setVolume] = useState(0);
 
   useEffect(() => {
