@@ -1,6 +1,5 @@
 // App.tsx
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
-import { IconButton } from "@mui/material";
 import {
   callService,
   Connection,
@@ -16,8 +15,20 @@ import BottomNav from "./Components/BottomNav";
 import PS5Status from "./Components/PS5Status";
 import VolumeSlider from "./Components/VolumeSlider";
 
-const StyledButton = styled.button`
-  ${tw`bg-blue-500 text-white font-bold py-2 px-4 rounded`}
+const AppContainer = styled.div`
+  ${tw`flex flex-col justify-end w-full`}
+`;
+
+const ContentContainer = styled.div`
+  ${tw`p-4`}
+`;
+
+const BottomContainer = styled.div`
+  ${tw`fixed bottom-0 left-0 right-0`}
+`;
+
+const PowerOffButton = styled.div`
+  ${tw` top-4 right-4 text-red-500 fixed rounded-full p-1 border border-black`}
 `;
 
 const App = () => {
@@ -94,30 +105,23 @@ const App = () => {
   }
 
   return (
-    <div className="App">
-      {/* test styled components and tailwind */}
-      <StyledButton>Click me</StyledButton>
+    <AppContainer>
       <button onClick={powerOnTV}>powerOnTV</button>
-      <div className="container">
+      <ContentContainer>
         {isMediaPlayerOn && (
-          <IconButton
-            className="power-off-button"
-            onClick={powerOffMediaPlayer}
-            color="secondary"
-          >
+          <PowerOffButton onClick={powerOffMediaPlayer} color="secondary">
             <PowerSettingsNewIcon />
-          </IconButton>
+          </PowerOffButton>
         )}
         {renderComponentBySource()}
-      </div>
+      </ContentContainer>
       {isMediaPlayerOn && (
-        <div className="bottom-container">
+        <BottomContainer>
           <VolumeSlider connection={connection} />
           <BottomNav connection={connection} />
-        </div>
+        </BottomContainer>
       )}
-    </div>
+    </AppContainer>
   );
 };
-
 export default App;

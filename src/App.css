@@ -1,16 +1,3 @@
-.App {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  width: 100%;
-}
-
-.bottom-container {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
 
 .volume-slider {
   display: flex; 
@@ -57,23 +44,6 @@
 
 .currently-playing-image {
   width: 100%;
-}
-
-.power-off-button.MuiIconButton-root {
-  color: red;
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 10;
-  border-radius: 50%;
-  padding: 5px;
-  width: auto;
-  height: auto;
-  border: 1px solid black;
-}
-
-.container {
-  padding: 10px;
 }
 
 .apple-tv-status {
