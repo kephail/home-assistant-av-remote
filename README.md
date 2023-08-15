@@ -1,4 +1,6 @@
-# Getting Started with Create React App
+# Home Assistant AV Remote
+
+This is a react frontend app utilising the home assistant websocket API to enable me to use my phone as a univesal remote to control my AV equipment.
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
